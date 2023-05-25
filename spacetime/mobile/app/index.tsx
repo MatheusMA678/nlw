@@ -1,88 +1,57 @@
-import { useEffect } from 'react'
-import { ImageBackground, View, Text, TouchableOpacity } from 'react-native'
-import { StatusBar } from 'expo-status-bar'
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session'
-import * as SecureStore from 'expo-secure-store'
-import { useRouter } from 'expo-router'
-import { styled } from 'nativewind'
+import { useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import * as SecureStore from "expo-secure-store";
+import { useRouter } from "expo-router";
 
-import {
-  useFonts,
-  Roboto_400Regular,
-  Roboto_700Bold,
-} from '@expo-google-fonts/roboto'
-import { BaiJamjuree_700Bold } from '@expo-google-fonts/bai-jamjuree'
+import { Copyright } from "../src/components/Copyright";
+import { api } from "../src/lib/api";
 
-import blurBg from '../src/assets/bg-blur.png'
-import Stripes from '../src/assets/stripes.svg'
-import NLWLogo from '../src/assets/nlw-spacetime-logo.svg'
-
-import { api } from '../src/lib/api'
-
-const StyledStripes = styled(Stripes)
+import NLWLogo from "../src/assets/nlw-spacetime-logo.svg";
 
 const discovery = {
-  authorizationEndpoint: 'https://github.com/login/oauth/authorize',
-  tokenEndpoint: 'https://github.com/login/oauth/access_token',
+  authorizationEndpoint: "https://github.com/login/oauth/authorize",
+  tokenEndpoint: "https://github.com/login/oauth/access_token",
   revocationEndpoint:
-    'https://github.com/settings/connections/applications/9037aa74599351b06935',
-}
+    "https://github.com/settings/connections/applications/9037aa74599351b06935",
+};
 
 export default function App() {
-  const router = useRouter()
-
-  const [fontsLoaded] = useFonts({
-    Roboto_400Regular,
-    Roboto_700Bold,
-    BaiJamjuree_700Bold,
-  })
+  const router = useRouter();
 
   const [, response, signInWithGithub] = useAuthRequest(
     {
-      clientId: '9037aa74599351b06935',
-      scopes: ['identity'],
+      clientId: "9037aa74599351b06935",
+      scopes: ["identity"],
       redirectUri: makeRedirectUri({
-        scheme: 'nlwspacetime',
+        scheme: "nlwspacetime",
       }),
     },
-    discovery,
-  )
+    discovery
+  );
 
   async function handleGithubOAuthCode(code: string) {
-    const response = await api.post('/register', {
+    const response = await api.post("/register", {
       code,
-    })
+    });
 
-    const { token } = response.data
+    const { token } = response.data;
 
-    await SecureStore.setItemAsync('token', token)
+    await SecureStore.setItemAsync("token", token);
 
-    router.push('/memories')
+    router.push("/memories");
   }
 
   useEffect(() => {
-    if (response?.type === 'success') {
-      const { code } = response.params
+    if (response?.type === "success") {
+      const { code } = response.params;
 
-      handleGithubOAuthCode(code)
+      handleGithubOAuthCode(code);
     }
-  }, [response])
-
-  if (!fontsLoaded) {
-    return null
-  }
+  }, [response]);
 
   return (
-    <ImageBackground
-      source={blurBg}
-      className="relative flex-1 items-center bg-gray-900 px-8 py-10"
-      imageStyle={{
-        position: 'absolute',
-        left: '-100%',
-      }}
-    >
-      <StyledStripes className="absolute left-2 top-4" />
-
+    <View className="flex-1 items-center px-8 py-10">
       <View className="flex-1 items-center justify-center gap-6 ">
         <NLWLogo />
 
@@ -107,11 +76,7 @@ export default function App() {
         </TouchableOpacity>
       </View>
 
-      <Text className="text-center font-body text-sm leading-relaxed text-gray-200">
-        Feito com 💜 no NLW da Rocketseat
-      </Text>
-
-      <StatusBar style="light" translucent />
-    </ImageBackground>
-  )
+      <Copyright />
+    </View>
+  );
 }
