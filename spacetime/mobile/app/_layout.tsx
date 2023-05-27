@@ -60,11 +60,12 @@ export default function Layout() {
           contentStyle: {
             backgroundColor: "transparent",
           },
+          animation: "fade",
         }}
       >
         <Stack.Screen name="index" redirect={isUserAuthenticated} />
+        <Stack.Screen name="memories/index" />
         <Stack.Screen name="new" />
-        <Stack.Screen name="memories" />
       </Stack>
     </ImageBackground>
   );

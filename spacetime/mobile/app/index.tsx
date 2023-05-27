@@ -31,15 +31,19 @@ export default function App() {
   );
 
   async function handleGithubOAuthCode(code: string) {
-    const response = await api.post("/register", {
-      code,
-    });
+    try {
+      const response = await api.post("/register", {
+        code,
+      });
 
-    const { token } = response.data;
+      const { token } = response.data;
 
-    await SecureStore.setItemAsync("token", token);
+      await SecureStore.setItemAsync("token", token);
 
-    router.push("/memories");
+      router.push("/memories");
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
