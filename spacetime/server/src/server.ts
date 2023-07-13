@@ -11,6 +11,7 @@ import { uploadRoutes } from "./routes/upload";
 import { resolve } from "node:path";
 
 const app = fastify();
+const port = Number(process.env.PORT)
 
 app.register(require("@fastify/static"), {
   root: resolve(__dirname, "../uploads"),
@@ -28,9 +29,6 @@ app.register(authRoutes);
 app.register(uploadRoutes);
 app.register(memoriesRoutes);
 
-app
-  .listen({
-    port: 3333,
-    host: "0.0.0.0",
-  })
-  .then(() => console.log(`🚀 HTTP Server running on http://localhost:3333`));
+app.listen({
+  port,
+}).then(() => console.log(`Running succesfully on port ${port}`));
