@@ -6,8 +6,7 @@
   "scripts": {
     "start": "tsx src/server.ts",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "vercel-build": "echo hello"
+    "vercel-build": "vercel dev"
   },
   "devDependencies": {
     "@types/node": "^20.1.4",

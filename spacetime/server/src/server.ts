@@ -1,5 +1,5 @@
 import "dotenv/config";
-import fastify from "fastify";
+import fastify, { FastifyInstance, FastifyServerOptions } from "fastify";
 
 import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
@@ -13,24 +13,21 @@ import { resolve } from "node:path";
 const app = fastify();
 const port = Number(process.env.PORT)
 
-app.register(require("@fastify/static"), {
-  root: resolve(__dirname, "../uploads"),
-  prefix: "/uploads",
-});
-app.register(multipart);
-app.register(cors, {
-  origin: true,
-});
-app.register(jwt, {
-  secret: "spacetime",
-});
+export default async function (instance: FastifyInstance, opts: FastifyServerOptions) {
+  instance.register(require("@fastify/static"), {
+    root: resolve(__dirname, "../uploads"),
+    prefix: "/uploads",
+  });
+  instance.register(multipart);
+  instance.register(cors, {
+    origin: true,
+  });
+  instance.register(jwt, {
+    secret: "spacetime",
+  });
 
-app.register(authRoutes);
-app.register(uploadRoutes);
-app.register(memoriesRoutes);
+  instance.register(authRoutes);
+  instance.register(uploadRoutes);
+  instance.register(memoriesRoutes);
+}
 
-app.listen({
-  port,
-}).then(() => console.log(`Running succesfully on port ${port}`));
-
-export default app
