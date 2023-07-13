@@ -32,3 +32,5 @@ app.register(memoriesRoutes);
 app.listen({
   port,
 }).then(() => console.log(`Running succesfully on port ${port}`));
+
+export default app
